@@ -1,5 +1,5 @@
 # Web Scraper using BeautifulSoup and Selenium 
-This repo allows you to collect tiny house listings from tinyhouselistings.com including listing title, image link, location, listing price, listing type, description/about section, list of features.
+Collect book listings from https://www.overdrive.com/ including book listing Title, Format, Author, Publisher, Release, Description.
 
 
 ## Book Listings
