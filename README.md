@@ -2,7 +2,7 @@
 This repo allows you to collect tiny house listings from tinyhouselistings.com including listing title, image link, location, listing price, listing type, description/about section, list of features.
 
 
-## Tiny House Listings
+## Book Listings
 
 Simply run python script
 ```
