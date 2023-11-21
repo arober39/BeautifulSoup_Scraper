@@ -9,14 +9,6 @@ import json
 from elasticsearch import Elasticsearch
 import configparser
 
-"""
-https://www.overdrive.com/robots.txt -> https://search.overdrive.com/sitemap.xml
-https://www.overdrive.com/subjects
-https://www.overdrive.com/subjects/law
-https://www.overdrive.com/subjects/law?page=2
-1283 pages in total
-"""
-
 config = configparser.ConfigParser()
 config.read('mfp_elastic.ini')
 
@@ -35,24 +27,23 @@ def send_books_to_elasticsearch(book_entry):
         )
     return
 
-def book_landing_page(landing_page):
+def create_webdriver(original_link):
     firefox_options = Options()
     firefox_options.headless = True
     driver = webdriver.Firefox(options=firefox_options)
-    driver.get(landing_page)
+    driver.get(original_link)
 
     time.sleep(5)
 
     html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
 
-    # Each Document will follow the structure below:
-    # Title
-    # Author
-    # Narrator
-    # Publisher
-    # Release
-    # Description
+    soup = BeautifulSoup(html, "html.parser")
+    driver.close()
+    return html, soup
+
+def book_landing_page(landing_page):
+
+    html, soup = create_webdriver(landing_page)
 
     doc = {}
 
@@ -80,21 +71,10 @@ def book_landing_page(landing_page):
         json.dump(listings_json, json_file, 
                         indent=4,  
                         separators=(" , ", " : "))
-
-    driver.close()
     
 
 def browse_law_books(book_link):
-    firefox_options = Options()
-    firefox_options.headless = True
-    driver = webdriver.Firefox(options=firefox_options)
-    driver.get(book_link)
-
-    time.sleep(5)
-
-    html = driver.page_source
-
-    soup = BeautifulSoup(html, "html.parser")
+    html, soup = create_webdriver(book_link)
     
     law_books = []
     for a in soup.findAll("a"):
@@ -106,19 +86,8 @@ def browse_law_books(book_link):
     for book in remove_dup_law_books:
         book_landing_page(book)
 
-    driver.close()
-
 def page_tracer(link):
-    firefox_options = Options()
-    firefox_options.headless = True
-    driver = webdriver.Firefox(options=firefox_options)
-    driver.get(link)
-
-    time.sleep(5)
-
-    html = driver.page_source
-
-    soup = BeautifulSoup(html, "html.parser")
+    html, soup = create_webdriver(link)
 
     count = 1
     while count < 300:
@@ -128,8 +97,6 @@ def page_tracer(link):
                 
         browse_law_books(law_url)
         count += 1
-
-    driver.close()
 
 
 def main():
@@ -145,3 +112,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+https://www.overdrive.com/robots.txt -> https://search.overdrive.com/sitemap.xml
+https://www.overdrive.com/subjects
+https://www.overdrive.com/subjects/law
+https://www.overdrive.com/subjects/law?page=2
+1283 pages in total
+"""

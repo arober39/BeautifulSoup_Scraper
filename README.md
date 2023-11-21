@@ -4,7 +4,7 @@ This repo allows you to collect tiny house listings from tinyhouselistings.com i
 
 ## Book Listings
 
-Simply run python script
+Simply run python scraper
 ```
 python3 scraping.py
 ```
