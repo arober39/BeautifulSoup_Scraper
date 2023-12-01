@@ -66,6 +66,9 @@ def book_landing_page(landing_page):
 
     json_object = json.dumps(doc)
     listings_json = json.loads(json_object)
+    
+    # Send book entries to Elasticsearch
+    # send_books_to_elasticsearch(listings_json)
 
     with open("book_listings.json", 'a') as json_file:
         json.dump(listings_json, json_file, 
